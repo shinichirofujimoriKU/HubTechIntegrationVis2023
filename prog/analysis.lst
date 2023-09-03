@@ -1,0 +1,240 @@
+GAMS 39.3.0  55b56f9b Jul 7, 2022           LEX-LEG x86 64bit/Linux - 08/23/23 11:34:57 Page 1
+Enduse integration analysis
+C o m p i l a t i o n
+
+
+   3  SET
+   4  Dum/
+   5  "Fin_Ene", "Fin_Ene_Ele_Heat", "Fin_Ene_Liq_and_Gas", "Fin_Ene_SolidsCoa", "Fin_Ene_SolidsBio", "Fin_Ene_Hyd", "Fin_Ene_Ind", "Fin_Ene_Com", "Fin_Ene_Res", "Fin_Ene_Tra"
+   6   
+   7  Sec_Ene_Ele_Heat, Sec_Ene_Ele_Heat_Coa, Sec_Ene_Ele_Oil, Sec_Ene_Ele_Heat_Gas, Sec_Ene_Ele_Heat_Nuc, Sec_Ene_Ele_Hyd, Sec_Ene_Ele_Solar, Sec_Ene_Ele_Win, Sec_Ene_Ele_Heat_Bio, Sec_Ene_Ele_Heat_Geo
+   8  Sec_Ene_Hyd, Sec_Ene_Hyd_Gas, Sec_Ene_Hyd_Bio, Sec_Ene_Hyd_Ele
+   9   
+  10  "Fin_Ene_Ind_Ele_Heat", "Fin_Ene_Ind_Liq_and_Gas", "Fin_Ene_Ind_SolidsCoa", "Fin_Ene_Ind_SolidsBio", "Fin_Ene_Ind_Hyd", "Fin_Ene_Com_Ele_Heat", "Fin_Ene_Com_Liq_and_Gas", "Fin_Ene_Com_SolidsCoa", "Fin_Ene_Com_SolidsBio", "Fin_Ene_Com_Hyd", "Fin_Ene_Res_Ele_Heat", "Fin_Ene_Res_Liq_and_Gas", "Fin_Ene_Res_SolidsCoa", "Fin_Ene_Res_SolidsBio", "Fin_Ene_Res_Hyd", "Fin_Ene_Tra_Ele", "Fin_Ene_Tra_Liq_and_Gas", "Fin_Ene_Tra_Liq_Bio", "Fin_Ene_Tra_Liq_Oil", "Fin_Ene_Tra_Hyd"
+  11   
+  12  /
+  13  Region,Var
+  14  ModName/AIMHub0*AIMHub10,AIMTech0*AIMTech10/
+  15  SCENARIO,Y
+  16  Value/Value/
+  17  Ite  Iteration/i0*i10/
+  18  Indi/
+  19  MAE             Mean absolute error
+  20  RMSE    Root Mean Square error
+  21  RMSEStand       Root Mean Square error standardized
+  22  MAEStand        Mean absolute error standardized
+  23  MEAN    Mean
+  24  Correlation     Correlation coefficient
+  25  /
+  26  ModSpe/AIMHub,AIMTech/
+  27  ;
+  28  ALIAS(Var,Var2);
+  29   
+  30  PARAMETER
+  31  DataLoad(ModName,Region,Var,SCENARIO,Y,Value)
+  32  DataLoad1(ModName,Region,Var,SCENARIO,Y)
+  33  *DataLoadComp(Ite,ModName,ModName,Region,Var,SCENARIO,Y)
+  34  MAE(Ite,SCENARIO,Region,Var)
+  35  RMSE(Ite,SCENARIO,Region,Var)
+  36  RMSEStand(Ite,SCENARIO,Region,Var)
+  37  MAEStand(Ite,SCENARIO,Region,Var)
+  38  MEAN(Ite,SCENARIO,Region,Var)
+  39  Stat(Indi,Ite,SCENARIO,Region,Var)
+  40  DifStatHub(Indi,SCENARIO,Region,Var)
+  41  ConvStat(Indi,Ite,ModSpe,SCENARIO,Region,Var)
+  42  MeanModel(ModName,SCENARIO,Region,Var)
+  43  VarModel(ModName,SCENARIO,Region,Var)
+  44  ;
+  45   
+GDXIN   /mnt/S/Individual/sfujimori/ModelRun/IntTool/230713IntModel/IntTool/output/fig/data/allcombine.gdx
+--- LOAD  Region = 2:Region
+--- LOAD  Var = 3:Var
+--- LOAD  SCENARIO = 4:SCENARIO
+--- LOAD  Y = 5:Y
+--- LOAD  DataLoad = 7:allmodel
+  49  *$load ModName
+  50   
+  51  ALIAS(ModName,ModName2,ModName1);
+  52   
+  53  SET
+  54  ModCompMap(Ite,ModName,ModName)/
+  55  i0      .       AIMHub0 .       AIMTech0
+  56  i1      .       AIMHub1 .       AIMTech0
+  57  i2      .       AIMHub2 .       AIMTech1
+  58  i3      .       AIMHub3 .       AIMTech2
+  59  i4      .       AIMHub4 .       AIMTech3
+  60  i5      .       AIMHub5 .       AIMTech4
+  61  i6      .       AIMHub6 .       AIMTech5
+  62  /
+  63  ModConverMap(ModName1,ModName2,Ite,ModSpe)/
+  64  AIMHub0  . AIMHub1  . i1  . AIMHub
+  65  AIMHub1  . AIMHub2  . i2  . AIMHub
+  66  AIMHub2  . AIMHub3  . i3  . AIMHub
+  67  AIMHub3  . AIMHub4  . i4  . AIMHub
+  68  AIMHub4  . AIMHub5  . i5  . AIMHub
+  69  AIMTech0  . AIMTech1  . i1 . AIMTech
+  70  AIMTech1  . AIMTech2  . i2  . AIMTech
+  71  AIMTech2  . AIMTech3  . i3  . AIMTech
+  72  AIMTech3  . AIMTech4  . i4  . AIMTech
+  73  AIMTech4  . AIMTech5  . i5  . AIMTech
+  74  /
+  75  ModCompMapHub(ModName,ModName)/
+  76  AIMHub0 .       AIMHub5
+  77  /
+  78   
+  79  Varmain(Var)/
+  80  "Fin_Ene"
+  81  "Fin_Ene_Ele_Heat"
+  82  "Fin_Ene_Liq_and_Gas"
+  83  "Fin_Ene_SolidsCoa"
+  84  "Fin_Ene_SolidsBio"
+  85  "Fin_Ene_Hyd"
+  86  "Fin_Ene_Ind"
+  87  "Fin_Ene_Ind_Ele_Heat"
+  88  "Fin_Ene_Ind_Liq_and_Gas"
+  89  "Fin_Ene_Ind_SolidsCoa"
+  90  "Fin_Ene_Ind_SolidsBio"
+  91  "Fin_Ene_Ind_Hyd"
+  92  "Fin_Ene_Com"
+  93  "Fin_Ene_Com_Ele_Heat"
+  94  "Fin_Ene_Com_Liq_and_Gas"
+  95  "Fin_Ene_Com_SolidsCoa"
+  96  "Fin_Ene_Com_SolidsBio"
+  97  "Fin_Ene_Com_Hyd"
+  98  "Fin_Ene_Res"
+  99  "Fin_Ene_Res_Ele_Heat"
+ 100  "Fin_Ene_Res_Liq_and_Gas"
+ 101  "Fin_Ene_Res_SolidsCoa"
+ 102  "Fin_Ene_Res_SolidsBio"
+ 103  "Fin_Ene_Res_Hyd"
+ 104  "Fin_Ene_Tra"
+ 105  "Fin_Ene_Tra_Ele"
+ 106  "Fin_Ene_Tra_Liq_and_Gas"
+ 107  "Fin_Ene_Tra_Liq_Bio"
+ 108  "Fin_Ene_Tra_Liq_Oil"
+ 109  "Fin_Ene_Tra_Hyd"
+ 110   
+ 111  Sec_Ene_Ele_Heat
+ 112  Sec_Ene_Ele_Heat_Coa
+ 113  Sec_Ene_Ele_Oil
+ 114  Sec_Ene_Ele_Heat_Gas
+ 115  Sec_Ene_Ele_Heat_Nuc
+ 116  Sec_Ene_Ele_Hyd
+ 117  Sec_Ene_Ele_Solar
+ 118  Sec_Ene_Ele_Win
+ 119  Sec_Ene_Ele_Heat_Bio
+ 120  Sec_Ene_Ele_Heat_Geo
+ 121   
+ 122  Sec_Ene_Hyd
+ 123  Sec_Ene_Hyd_Gas
+ 124  Sec_Ene_Hyd_Bio
+ 125  Sec_Ene_Hyd_Ele
+ 126   
+      "Fin_Ene_Res_Gas"
+      "Fin_Ene_Res_Liq"
+      "Fin_Ene_Ind_Gas"
+      "Fin_Ene_Ind_Liq"
+      "Fin_Ene_Gas"
+      "Fin_Ene_Liq"
+      "Fin_Ene_Com_Gas"
+      "Fin_Ene_Com_Liq"
+      "Fin_Ene_Tra_Gas"
+ 138  /
+ 139  Y2020Comp(Y)/
+ 140  2020,2025,2030,2035,2040,2045,2050,2055,2060,2065,2070,2075,2080,2085,2090,2095,2100
+ 141  /
+ 142  RegionMain(Region)/
+ 143  World
+ 144  R5ASIA
+ 145  "R5OECD90+EU"
+ 146  R5REF
+ 147  R5MAF
+ 148  R5LAM
+ 149  /
+ 150   
+ 151  ;
+ 152  DataLoad1(ModName,Region,Var,SCENARIO,Y)=DataLoad(ModName,Region,Var,SCENARIO,Y,"Value");
+ 153   
+ 154  Stat("MAE",Ite,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 155    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)-DataLoad1(ModName2,Region,Var,SCENARIO,Y))))/
+ 156    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1);
+ 157   
+ 158  Stat("RMSE",Ite,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 159    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)-DataLoad1(ModName2,Region,Var,SCENARIO,Y)))**2)/
+ 160    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1)**2;
+ 161   
+ 162  Stat("MEAN",Ite,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 163    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)+DataLoad1(ModName2,Region,Var,SCENARIO,Y))))/
+ 164    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMap(Ite,ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1);
+ 165   
+ 166  MeanModel(ModName,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM(Y$(Y2020Comp(Y) AND DataLoad1(ModName,Region,Var,SCENARIO,Y)),1))=
+ 167    SUM(Y$(Y2020Comp(Y) AND DataLoad1(ModName,Region,Var,SCENARIO,Y)),DataLoad1(ModName,Region,Var,SCENARIO,Y))/
+ 168    SUM(Y$(Y2020Comp(Y) AND DataLoad1(ModName,Region,Var,SCENARIO,Y)),1);
+ 169   
+ 170  VarModel(ModName,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM(Y$(Y2020Comp(Y) AND DataLoad1(ModName,Region,Var,SCENARIO,Y)),1))=
+ 171    SUM(Y$(Y2020Comp(Y) AND DataLoad1(ModName,Region,Var,SCENARIO,Y)),ABS(DataLoad1(ModName,Region,Var,SCENARIO,Y)-MeanModel(ModName,SCENARIO,Region,Var))**2)
+ 172  *  /SUM(Y$(Y2020Comp(Y) AND DataLoad1(ModName,Region,Var,SCENARIO,Y)),1)
+ 173    ;
+ 174   
+ 175  Stat("RMSEStand",Ite,SCENARIO,Region,Var)$(Stat("MEAN",Ite,SCENARIO,Region,Var))=Stat("RMSE",Ite,SCENARIO,Region,Var)/Stat("MEAN",Ite,SCENARIO,Region,Var);
+ 176  Stat("MAEStand",Ite,SCENARIO,Region,Var)$(Stat("MEAN",Ite,SCENARIO,Region,Var))=Stat("MAE",Ite,SCENARIO,Region,Var)/Stat("MEAN",Ite,SCENARIO,Region,Var);
+ 177   
+ 178  Stat("Correlation",Ite,SCENARIO,Region,Var)$(SUM((ModName1,ModName2)$ModCompMap(Ite,ModName1,ModName2),VarModel(ModName1,SCENARIO,Region,Var)*VarModel(ModName2,SCENARIO,Region,Var)))=
+ 179    SUM(Y$(Y2020Comp(Y)),
+ 180      SUM(ModName1$(DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND SUM(ModName2,ModCompMap(Ite,ModName1,ModName2))),DataLoad1(ModName1,Region,Var,SCENARIO,Y)-MeanModel(ModName1,SCENARIO,Region,Var))*
+ 181      SUM(ModName2$(DataLoad1(ModName2,Region,Var,SCENARIO,Y) AND SUM(ModName1,ModCompMap(Ite,ModName1,ModName2))),DataLoad1(ModName2,Region,Var,SCENARIO,Y)-MeanModel(ModName2,SCENARIO,Region,Var))
+ 182    )/
+ 183      SQRT( SUM(ModName1$SUM(ModName2,ModCompMap(Ite,ModName1,ModName2)),VarModel(ModName1,SCENARIO,Region,Var))
+ 184               *SUM(ModName2$SUM(ModName1,ModCompMap(Ite,ModName1,ModName2)),VarModel(ModName2,SCENARIO,Region,Var))
+ 185          );
+ 186   
+ 187  ConvStat("MAE",Ite,ModSpe,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModConverMap(ModName1,ModName2,Ite,ModSpe) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 188    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModConverMap(ModName1,ModName2,Ite,ModSpe) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)-DataLoad1(ModName2,Region,Var,SCENARIO,Y))))/
+ 189    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModConverMap(ModName1,ModName2,Ite,ModSpe) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1);
+ 190  ConvStat("MEAN",Ite,ModSpe,SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModConverMap(ModName1,ModName2,Ite,ModSpe) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 191    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModConverMap(ModName1,ModName2,Ite,ModSpe) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)+DataLoad1(ModName2,Region,Var,SCENARIO,Y))))/
+ 192    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModConverMap(ModName1,ModName2,Ite,ModSpe) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1);
+ 193  ConvStat("MAEStand",Ite,ModSpe,SCENARIO,Region,Var)$(ConvStat("MEAN",Ite,ModSpe,SCENARIO,Region,Var))=ConvStat("MAE",Ite,ModSpe,SCENARIO,Region,Var)/ConvStat("MEAN",Ite,ModSpe,SCENARIO,Region,Var);
+ 194   
+ 195  DifStatHub("MAE",SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMapHub(ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 196    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMapHub(ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)-DataLoad1(ModName2,Region,Var,SCENARIO,Y))))/
+ 197    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMapHub(ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1);
+ 198  DifStatHub("MEAN",SCENARIO,Region,Var)$(Varmain(Var) AND RegionMain(Region) AND SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMapHub(ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1))=
+ 199    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMapHub(ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y)),ABS((DataLoad1(ModName1,Region,Var,SCENARIO,Y)+DataLoad1(ModName2,Region,Var,SCENARIO,Y))))/
+ 200    SUM((Y,ModName1,ModName2)$(Y2020Comp(Y) AND ModCompMapHub(ModName1,ModName2) AND DataLoad1(ModName1,Region,Var,SCENARIO,Y) AND DataLoad1(ModName2,Region,Var,SCENARIO,Y)),1);
+ 201  DifStatHub("MAEStand",SCENARIO,Region,Var)$(DifStatHub("MEAN",SCENARIO,Region,Var))=DifStatHub("MAE",SCENARIO,Region,Var)/DifStatHub("MEAN",SCENARIO,Region,Var);
+ 202   
+ 203  execute_unload '../../../../../../IntTool/output/fig//data/analysis.gdx'
+ 204  Stat
+ 205  ConvStat
+ 206  DifStatHub
+ 207  ;
+GAMS 39.3.0  55b56f9b Jul 7, 2022           LEX-LEG x86 64bit/Linux - 08/23/23 11:34:57 Page 2
+Enduse integration analysis
+Include File Summary
+
+
+   SEQ   GLOBAL TYPE      PARENT   LOCAL  FILENAME
+
+     1        1 INPUT          0       0  /mnt/S/Individual/sfujimori/ModelRun/IntTool/230713IntModel/Model/AIMCGE/AIMCGE/tools/Visualization/prog/analysis.gms
+     2       46 GDXIN          1      46  /mnt/S/Individual/sfujimori/ModelRun/IntTool/230713IntModel/IntTool/output/fig/data/allcombine.gdx
+
+
+COMPILATION TIME     =        4.222 SECONDS    573 MB  39.3.0 55b56f9b LEX-LEG
+GAMS 39.3.0  55b56f9b Jul 7, 2022           LEX-LEG x86 64bit/Linux - 08/23/23 11:34:57 Page 3
+Enduse integration analysis
+E x e c u t i o n
+
+
+EXECUTION TIME       =        8.984 SECONDS  1,179 MB  39.3.0 55b56f9b LEX-LEG
+
+
+USER: Medium MUD - 10 User License                   S221125|0002AO-GEN
+      Kyoto University, Department of Environmental Engineering DC12258
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /mnt/S/Individual/sfujimori/ModelRun/IntTool/230713IntModel/Model/AIMCGE/AIMCGE/tools/Visualization/prog/analysis.gms
+Output     /mnt/S/Individual/sfujimori/ModelRun/IntTool/230713IntModel/Model/AIMCGE/AIMCGE/tools/Visualization/prog/analysis.lst
